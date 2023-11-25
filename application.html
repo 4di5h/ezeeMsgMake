@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Variable Replacement App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 20px;
+    }
+    input {
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Variable Replacement App</h1>
+
+  <label for="nameInput">Name:</label>
+  <input type="text" id="nameInput" placeholder="Enter name">
+
+  <label for="ageInput">Age:</label>
+  <input type="text" id="ageInput" placeholder="Enter age">
+
+  <label for="companyInput">Company:</label>
+  <input type="text" id="companyInput" placeholder="Enter company">
+
+  <p id="outputParagraph">Hello my name is <span id="nameSpan">Sam</span> and I am <span id="ageSpan">27</span> years old, my company is <span id="companySpan">Artworks Limited</span>.</p>
+
+  <button onclick="replaceVariables()">Replace Variables</button>
+
+  <script>
+    function replaceVariables() {
+      // Get the input values
+      var nameValue = document.getElementById("nameInput").value;
+      var ageValue = document.getElementById("ageInput").value;
+      var companyValue = document.getElementById("companyInput").value;
+
+      // Update the content of the spans in the paragraph
+      document.getElementById("nameSpan").innerText = nameValue;
+      document.getElementById("ageSpan").innerText = ageValue;
+      document.getElementById("companySpan").innerText = companyValue;
+    }
+  </script>
+
+</body>
+</html>
