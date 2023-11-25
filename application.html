@@ -27,7 +27,8 @@
       margin-top: 20px;
       text-align: left;
     }
-    #copyButton {
+    #copyButton,
+    #resetButton {
       margin-top: 10px;
       cursor: pointer;
     }
@@ -71,10 +72,14 @@
 
   <button onclick="replaceVariables()">Replace Variables</button>
   <button onclick="generatePlaceholders()">Generate Placeholders</button>
+  <button id="resetButton" onclick="resetVariables()">Reset Variables</button>
+
 
   <p id="outputParagraph">Result will be displayed here.</p>
 
   <p id="characterCount">Character count: 0</p>
+
+  <button id="copyButton" onclick="copyToClipboard()">Copy Output</button>
 
   <div id="legend">
     <h2>Placeholder Legend:</h2>
@@ -87,7 +92,7 @@
     <!-- End of Additional Variables Legend -->
   </div>
 
-  <button id="copyButton" onclick="copyToClipboard()">Copy Output</button>
+ 
 
   <script>
     function replaceVariables() {
@@ -157,6 +162,15 @@
       document.execCommand('copy');
       document.body.removeChild(textArea);
       alert("Output copied to clipboard!");
+    }
+
+    function resetVariables() {
+      // Reset input values for all variables
+      document.getElementById("referenceNameInput").value = "";
+      document.getElementById("roleInput").value = "";
+      document.getElementById("companyInput").value = "";
+      document.getElementById("variable1Input").value = "";
+      document.getElementById("variable2Input").value = "";
     }
   </script>
 
