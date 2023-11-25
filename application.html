@@ -19,30 +19,41 @@
 
   <h1>Variable Replacement App</h1>
 
-  <label for="nameInput">Name:</label>
-  <input type="text" id="nameInput" placeholder="Enter name">
+  <label for="referenceNameInput">Reference Name:</label>
+  <input type="text" id="referenceNameInput" placeholder="Enter reference name">
 
-  <label for="ageInput">Age:</label>
-  <input type="text" id="ageInput" placeholder="Enter age">
+  <label for="roleInput">Role:</label>
+  <input type="text" id="roleInput" placeholder="Enter role">
 
   <label for="companyInput">Company:</label>
   <input type="text" id="companyInput" placeholder="Enter company">
 
-  <p id="outputParagraph">Hello my name is <span id="nameSpan">Sam</span> and I am <span id="ageSpan">27</span> years old, my company is <span id="companySpan">Artworks Limited</span>.</p>
+  <p id="outputParagraph">Hello, my reference name is <span id="referenceNameSpan">John</span>, and my role is <span id="roleSpan">Developer</span> at <span id="companySpan">TechCo</span>.</p>
 
   <button onclick="replaceVariables()">Replace Variables</button>
+
+  <p id="characterCount">Character count: 0</p>
 
   <script>
     function replaceVariables() {
       // Get the input values
-      var nameValue = document.getElementById("nameInput").value;
-      var ageValue = document.getElementById("ageInput").value;
+      var referenceNameValue = document.getElementById("referenceNameInput").value;
+      var roleValue = document.getElementById("roleInput").value;
       var companyValue = document.getElementById("companyInput").value;
 
       // Update the content of the spans in the paragraph
-      document.getElementById("nameSpan").innerText = nameValue;
-      document.getElementById("ageSpan").innerText = ageValue;
+      document.getElementById("referenceNameSpan").innerText = referenceNameValue;
+      document.getElementById("roleSpan").innerText = roleValue;
       document.getElementById("companySpan").innerText = companyValue;
+
+      // Update the character count
+      updateCharacterCount();
+    }
+
+    function updateCharacterCount() {
+      var paragraphContent = document.getElementById("outputParagraph").innerText;
+      var characterCount = paragraphContent.length;
+      document.getElementById("characterCount").innerText = "Character count: " + characterCount;
     }
   </script>
 
