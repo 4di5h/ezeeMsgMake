@@ -10,8 +10,22 @@
       text-align: center;
       margin: 20px;
     }
-    input {
+    input, textarea {
       margin-bottom: 10px;
+      box-sizing: border-box;
+      width: 100%;
+    }
+    #variableInputs {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+    .variable-input-group {
+      flex-basis: 48%;
+    }
+    #legend {
+      margin-top: 20px;
+      text-align: left;
     }
   </style>
 </head>
@@ -19,35 +33,107 @@
 
   <h1>Variable Replacement App</h1>
 
-  <label for="referenceNameInput">Reference Name:</label>
-  <input type="text" id="referenceNameInput" placeholder="Enter reference name">
+  <label for="paragraphInput">Enter Paragraph:</label>
+  <textarea id="paragraphInput" rows="8" placeholder="Enter the paragraph with placeholders for variables. Use {referenceName}, {role}, {company}, etc."></textarea>
 
-  <label for="roleInput">Role:</label>
-  <input type="text" id="roleInput" placeholder="Enter role">
-
-  <label for="companyInput">Company:</label>
-  <input type="text" id="companyInput" placeholder="Enter company">
-
-  <p id="outputParagraph">Hello, my reference name is <span id="referenceNameSpan">John</span>, and my role is <span id="roleSpan">Developer</span> at <span id="companySpan">TechCo</span>.</p>
+  <div id="variableInputs">
+    <div class="variable-input-group">
+      <label for="referenceNameInput">Reference Name:</label>
+      <input type="text" id="referenceNameInput" placeholder="Enter reference name">
+    </div>
+    <div class="variable-input-group">
+      <label for="roleInput">Role:</label>
+      <input type="text" id="roleInput" placeholder="Enter role">
+    </div>
+    <div class="variable-input-group">
+      <label for="companyInput">Company:</label>
+      <input type="text" id="companyInput" placeholder="Enter company">
+    </div>
+    <!-- Additional Variables -->
+    <div class="variable-input-group">
+      <label for="variable1NameInput">Variable 1 Name:</label>
+      <input type="text" id="variable1NameInput" placeholder="Enter variable 1 name">
+      <label for="variable1Input">Variable 1:</label>
+      <input type="text" id="variable1Input" placeholder="Enter variable 1">
+    </div>
+    <div class="variable-input-group">
+      <label for="variable2NameInput">Variable 2 Name:</label>
+      <input type="text" id="variable2NameInput" placeholder="Enter variable 2 name">
+      <label for="variable2Input">Variable 2:</label>
+      <input type="text" id="variable2Input" placeholder="Enter variable 2">
+    </div>
+    <!-- End of Additional Variables -->
+  </div>
 
   <button onclick="replaceVariables()">Replace Variables</button>
+  <button onclick="generatePlaceholders()">Generate Placeholders</button>
+
+  <p id="outputParagraph">Result will be displayed here.</p>
 
   <p id="characterCount">Character count: 0</p>
+
+  <div id="legend">
+    <h2>Placeholder Legend:</h2>
+    <p>Reference Name: {referenceName}</p>
+    <p>Role: {role}</p>
+    <p>Company: {company}</p>
+    <!-- Additional Variables Legend -->
+    <p id="variable1Legend"></p>
+    <p id="variable2Legend"></p>
+    <!-- End of Additional Variables Legend -->
+  </div>
 
   <script>
     function replaceVariables() {
       // Get the input values
+      var paragraphWithPlaceholders = document.getElementById("paragraphInput").value;
       var referenceNameValue = document.getElementById("referenceNameInput").value;
       var roleValue = document.getElementById("roleInput").value;
       var companyValue = document.getElementById("companyInput").value;
 
-      // Update the content of the spans in the paragraph
-      document.getElementById("referenceNameSpan").innerText = referenceNameValue;
-      document.getElementById("roleSpan").innerText = roleValue;
-      document.getElementById("companySpan").innerText = companyValue;
+      // Additional Variables
+      var variable1Value = document.getElementById("variable1Input").value;
+      var variable2Value = document.getElementById("variable2Input").value;
+      // End of Additional Variables
+
+      // Derive placeholder names
+      var placeholder1Value = variable1Value ? variable1Value.replace(/\s/g, '') : "";
+      var placeholder2Value = variable2Value ? variable2Value.replace(/\s/g, '') : "";
+      // End of Derive placeholder names
+
+      // Replace placeholders in the paragraph
+      var replacedParagraph = paragraphWithPlaceholders
+        .replace(/{referenceName}/g, referenceNameValue)
+        .replace(/{role}/g, roleValue)
+        .replace(/{company}/g, companyValue)
+        .replace(new RegExp("{" + placeholder1Value + "}", 'g'), variable1Value)
+        .replace(new RegExp("{" + placeholder2Value + "}", 'g'), variable2Value);
+
+      // Update the content of the output paragraph
+      document.getElementById("outputParagraph").innerText = replacedParagraph;
 
       // Update the character count
       updateCharacterCount();
+
+      // Update the legend for additional variables
+      document.getElementById("variable1Legend").innerText = variable1Value ? variable1Value + ": {" + placeholder1Value + "}" : "";
+      document.getElementById("variable2Legend").innerText = variable2Value ? variable2Value + ": {" + placeholder2Value + "}" : "";
+    }
+
+    function generatePlaceholders() {
+      // Additional Variables
+      var variable1NameValue = document.getElementById("variable1NameInput").value;
+      var variable2NameValue = document.getElementById("variable2NameInput").value;
+      // End of Additional Variables
+
+      // Derive placeholder names
+      var placeholder1Value = variable1NameValue ? variable1NameValue.replace(/\s/g, '') : "";
+      var placeholder2Value = variable2NameValue ? variable2NameValue.replace(/\s/g, '') : "";
+      // End of Derive placeholder names
+
+      // Update the legend for additional variables
+      document.getElementById("variable1Legend").innerText = variable1NameValue ? variable1NameValue + ": {" + placeholder1Value + "}" : "";
+      document.getElementById("variable2Legend").innerText = variable2NameValue ? variable2NameValue + ": {" + placeholder2Value + "}" : "";
     }
 
     function updateCharacterCount() {
