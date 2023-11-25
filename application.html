@@ -27,6 +27,10 @@
       margin-top: 20px;
       text-align: left;
     }
+    #copyButton {
+      margin-top: 10px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -82,6 +86,8 @@
     <p id="variable2Legend"></p>
     <!-- End of Additional Variables Legend -->
   </div>
+
+  <button id="copyButton" onclick="copyToClipboard()">Copy Output</button>
 
   <script>
     function replaceVariables() {
@@ -140,6 +146,17 @@
       var paragraphContent = document.getElementById("outputParagraph").innerText;
       var characterCount = paragraphContent.length;
       document.getElementById("characterCount").innerText = "Character count: " + characterCount;
+    }
+
+    function copyToClipboard() {
+      var outputParagraph = document.getElementById("outputParagraph");
+      var textArea = document.createElement("textarea");
+      textArea.value = outputParagraph.innerText;
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textArea);
+      alert("Output copied to clipboard!");
     }
   </script>
 
