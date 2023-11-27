@@ -81,20 +81,52 @@
 
   <button id="copyButton" onclick="copyToClipboard()">Copy Output</button>
 
-  <div id="legend">
-    <h2>Placeholder Legend:</h2>
-    <p>Reference Name: {referenceName}</p>
-    <p>Role: {role}</p>
-    <p>Company: {company}</p>
-    <!-- Additional Variables Legend -->
-    <p id="variable1Legend"></p>
-    <p id="variable2Legend"></p>
-    <!-- End of Additional Variables Legend -->
-  </div>
+<div id="legend">
+  <h2>Placeholder Legend:</h2>
+  <p>
+    Reference Name: 
+    <span id="referenceNameLegend">{referenceName}</span>
+    <button onclick="copyLegend('{referenceName}')">Copy</button>
+  </p>
+  <p>
+    Role: 
+    <span id="roleLegend">{role}</span>
+    <button onclick="copyLegend('{role}')">Copy</button>
+  </p>
+  <p>
+    Company: 
+    <span id="companyLegend">{company}</span>
+    <button onclick="copyLegend('{company}')">Copy</button>
+  </p>
+  <!-- Additional Variables Legend -->
+  <p id="variable1Legend">
+    <span id="variable1NameLegend"></span>: 
+    <span id="variable1PlaceholderLegend"></span>
+    <button onclick="copyLegend(document.getElementById('variable1PlaceholderLegend').innerText)">Copy</button>
+  </p>
+  <p id="variable2Legend">
+    <span id="variable2NameLegend"></span>: 
+    <span id="variable2PlaceholderLegend"></span>
+    <button onclick="copyLegend(document.getElementById('variable2PlaceholderLegend').innerText)">Copy</button>
+  </p>
+  <!-- End of Additional Variables Legend -->
+</div>
+
 
  
 
   <script>
+
+  function copyLegend(placeholder) {
+    var textArea = document.createElement("textarea");
+    textArea.value = placeholder;
+    document.body.appendChild(textArea);
+    textArea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textArea);
+    
+  }
+
     function replaceVariables() {
       // Get the input values
       var paragraphWithPlaceholders = document.getElementById("paragraphInput").value;
@@ -161,7 +193,7 @@
       textArea.select();
       document.execCommand('copy');
       document.body.removeChild(textArea);
-      alert("Output copied to clipboard!");
+      
     }
 
     function resetVariables() {
