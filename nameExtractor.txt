@@ -1,0 +1,31 @@
+// Function to extract first names from LinkedIn contacts and generate CSV
+function extractAndExportCSV() {
+  // Select all elements with the specified HTML structure
+  const nameElements = document.querySelectorAll('span[dir="ltr"] > span[aria-hidden="true"]');
+
+  // Array to store extracted first names
+  const firstNames = [];
+
+  // Loop through each element and extract the text content
+  nameElements.forEach(element => {
+    const fullName = element.textContent.trim();
+    
+    // Split the full name and take the first part as the first name
+    const firstName = fullName.split(' ')[0];
+
+    // Add the first name to the array
+    firstNames.push(firstName);
+  });
+
+  // Generate CSV-formatted output
+  const csvContent = 'First Name\n' + firstNames.join(', ');
+
+  // Display the CSV-formatted output
+  console.log('CSV Output:\n', csvContent);
+
+  // Return the array of first names if needed for further processing
+  return firstNames;
+}
+
+// Call the function to extract first names and generate CSV
+extractAndExportCSV();

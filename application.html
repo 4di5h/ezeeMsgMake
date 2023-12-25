@@ -28,23 +28,39 @@
       text-align: left;
     }
     #copyButton,
-    #resetButton {
+    #resetButton,
+    #resetNamesButton {
       margin-top: 10px;
       cursor: pointer;
     }
+    #referenceNameList {
+      	margin-top: 15px;
+	margin-bottom: 10px;
+      text-align: center;
+    }
+    .reference-name-item {
+      font-size: 11px;
+	font-weight: bold;
+	font-style: italic;
+	cursor: pointer;
+      margin-right: 10px;
+      border: 1px solid #000; /* Set the desired border style */
+      padding: 2px; /* Set the desired padding */
+    }
+
   </style>
 </head>
 <body>
 
-  <h1>Variable Replacement App</h1>
+  <h1 style="font-size: 20px;">Variable Replacement App</h1>
 
   <label for="paragraphInput">Enter Paragraph:</label>
   <textarea id="paragraphInput" rows="8" placeholder="Enter the paragraph with placeholders for variables. Use {referenceName}, {role}, {company}, etc."></textarea>
 
   <div id="variableInputs">
     <div class="variable-input-group">
-      <label for="referenceNameInput">Reference Name:</label>
-      <input type="text" id="referenceNameInput" placeholder="Enter reference name">
+      <label for="referenceNameInput">Reference Name(s):</label>
+      <input type="text" id="referenceNameInput" placeholder="Enter reference names separated by commas">
     </div>
     <div class="variable-input-group">
       <label for="roleInput">Role:</label>
@@ -68,12 +84,17 @@
       <input type="text" id="variable2Input" placeholder="Enter variable 2">
     </div>
     <!-- End of Additional Variables -->
+
   </div>
+
+  Reference Name List: <span style="font-size: 10px;">(Note: The name buttons below directly copy the paragraph on clicking)</span>
+	<div id="referenceNameList"></div>
+
 
   <button onclick="replaceVariables()">Replace Variables</button>
   <button onclick="generatePlaceholders()">Generate Placeholders</button>
   <button id="resetButton" onclick="resetVariables()">Reset Variables</button>
-
+  <button id="resetNamesButton" onclick="resetNames()">Reset Names</button>
 
   <p id="outputParagraph">Result will be displayed here.</p>
 
@@ -81,24 +102,50 @@
 
   <button id="copyButton" onclick="copyToClipboard()">Copy Output</button>
 
-  <div id="legend">
-    <h2>Placeholder Legend:</h2>
-    <p>Reference Name: {referenceName}</p>
-    <p>Role: {role}</p>
-    <p>Company: {company}</p>
-    <!-- Additional Variables Legend -->
-    <p id="variable1Legend"></p>
-    <p id="variable2Legend"></p>
-    <!-- End of Additional Variables Legend -->
-  </div>
+
+<div id="legend">
+  <h2>Placeholder Legend:</h2>
+  <p>
+    Reference Name: 
+    <span id="referenceNameLegend">{referenceName}</span>
+    <button onclick="copyLegend('{referenceName}')">Copy</button>
+  </p>
+  <p>
+    Role: 
+    <span id="roleLegend">{role}</span>
+    <button onclick="copyLegend('{role}')">Copy</button>
+  </p>
+  <p>
+    Company: 
+    <span id="companyLegend">{company}</span>
+    <button onclick="copyLegend('{company}')">Copy</button>
+  </p>
+  <!-- Additional Variables Legend -->
+  <p id="variable1Legend">
+    <span id="variable1NameLegend"></span>: 
+    <span id="variable1PlaceholderLegend"></span>
+    <button onclick="copyLegend(document.getElementById('variable1PlaceholderLegend').innerText)">Copy</button>
+  </p>
+  <p id="variable2Legend">
+    <span id="variable2NameLegend"></span>: 
+    <span id="variable2PlaceholderLegend"></span>
+    <button onclick="copyLegend(document.getElementById('variable2PlaceholderLegend').innerText)">Copy</button>
+  </p>
+  <!-- End of Additional Variables Legend -->
+    
+</div>
+
 
  
 
   <script>
-    function replaceVariables() {
+    function resetNames() {
+      document.getElementById("referenceNameInput").value = "";
+      document.getElementById("referenceNameList").innerHTML = "";
+    }
+    function replaceVariablesForName(referenceName) {
       // Get the input values
       var paragraphWithPlaceholders = document.getElementById("paragraphInput").value;
-      var referenceNameValue = document.getElementById("referenceNameInput").value;
       var roleValue = document.getElementById("roleInput").value;
       var companyValue = document.getElementById("companyInput").value;
 
@@ -114,7 +161,7 @@
 
       // Replace placeholders in the paragraph
       var replacedParagraph = paragraphWithPlaceholders
-        .replace(/{referenceName}/g, referenceNameValue)
+        .replace(/{referenceName}/g, referenceName)
         .replace(/{role}/g, roleValue)
         .replace(/{company}/g, companyValue)
         .replace(new RegExp("{" + placeholder1Value + "}", 'g'), variable1Value)
@@ -126,10 +173,41 @@
       // Update the character count
       updateCharacterCount();
 
-      // Update the legend for additional variables
-      document.getElementById("variable1Legend").innerText = variable1Value ? variable1Value + ": {" + placeholder1Value + "}" : "";
-      document.getElementById("variable2Legend").innerText = variable2Value ? variable2Value + ": {" + placeholder2Value + "}" : "";
+      // Copy the output with replaced placeholder
+      copyToClipboard();
     }
+
+    function updateReferenceNameList() {
+      var referenceNameInput = document.getElementById("referenceNameInput");
+      var referenceNames = referenceNameInput.value.split(',').map(name => name.trim());
+      var referenceNameListContainer = document.getElementById("referenceNameList");
+      referenceNameListContainer.innerHTML = "";
+
+      referenceNames.forEach(name => {
+        var item = document.createElement("span");
+        item.className = "reference-name-item";
+        item.textContent = name;
+        item.onclick = function () {
+          replaceVariablesForName(name);
+        };
+
+        referenceNameListContainer.appendChild(item);
+      });
+    }
+
+    function replaceVariables() {
+      updateReferenceNameList();
+    }
+
+  function copyLegend(placeholder) {
+    var textArea = document.createElement("textarea");
+    textArea.value = placeholder;
+    document.body.appendChild(textArea);
+    textArea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textArea);
+    
+  }
 
     function generatePlaceholders() {
       // Additional Variables
@@ -161,7 +239,7 @@
       textArea.select();
       document.execCommand('copy');
       document.body.removeChild(textArea);
-      alert("Output copied to clipboard!");
+      
     }
 
     function resetVariables() {
