@@ -1,5 +1,6 @@
 /*
 Instructions:
+Make sure to only send 10 invites per role as weekly limit is 200
 Open the page, example: https://www.linkedin.com/company/atbfinancial/people/?facetNetwork=F%2CS
 Shows list of people with 2nd level connections
 Scroll down to the end of the page doing 'Show More Results' if needed

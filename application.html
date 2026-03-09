@@ -155,8 +155,11 @@
       // End of Additional Variables
 
       // Derive placeholder names
-      var placeholder1Value = variable1Value ? variable1Value.replace(/\s/g, '') : "";
-      var placeholder2Value = variable2Value ? variable2Value.replace(/\s/g, '') : "";
+      var variable1Name = document.getElementById("variable1NameInput").value;
+      var variable2Name = document.getElementById("variable2NameInput").value;
+
+      var placeholder1Value = variable1Name ? variable1Name.replace(/\s/g, '') : "";
+      var placeholder2Value = variable2Name ? variable2Name.replace(/\s/g, '') : "";
       // End of Derive placeholder names
 
       // Replace placeholders in the paragraph

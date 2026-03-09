@@ -1,31 +1,46 @@
-// Function to extract first names from LinkedIn contacts and generate CSV
-function extractAndExportCSV() {
-  // Select all elements with the specified HTML structure
-  const nameElements = document.querySelectorAll('span[dir="ltr"] > span[aria-hidden="true"]');
+/*
+Downloads a csv of the list of First and Last names of profiles on screen
+Later use =concat formula to prepare the email address format
+*/
+function extractAndDownloadCSV() {
 
-  // Array to store extracted first names
-  const firstNames = [];
+  const nameElements = document.querySelectorAll('.lt-line-clamp--single-line');
 
-  // Loop through each element and extract the text content
-  nameElements.forEach(element => {
-    const fullName = element.textContent.trim();
-    
-    // Split the full name and take the first part as the first name
-    const firstName = fullName.split(' ')[0];
+  const rows = [];
 
-    // Add the first name to the array
-    firstNames.push(firstName);
+  nameElements.forEach(el => {
+
+    let fullName = el.innerText.trim();
+
+    // Remove certifications after comma
+    fullName = fullName.split(",")[0];
+
+    const parts = fullName.split(/\s+/);
+
+    const firstName = parts[0] || "";
+    const lastName = parts.slice(1).join(" ") || "";
+
+    rows.push(`${firstName},${lastName}`);
+
   });
 
-  // Generate CSV-formatted output
-  const csvContent = 'First Name\n' + firstNames.join(', ');
+  const csvContent = "First Name,Last Name\n" + rows.join("\n");
 
-  // Display the CSV-formatted output
-  console.log('CSV Output:\n', csvContent);
+  // Create downloadable file
+  const blob = new Blob([csvContent], { type: "text/csv" });
+  const url = URL.createObjectURL(blob);
 
-  // Return the array of first names if needed for further processing
-  return firstNames;
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "linkedin_names.csv";
+  document.body.appendChild(a);
+  a.click();
+
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+
+  console.log("CSV downloaded with", rows.length, "names");
+
 }
 
-// Call the function to extract first names and generate CSV
-extractAndExportCSV();
+extractAndDownloadCSV();
