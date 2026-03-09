@@ -1,0 +1,77 @@
+/*
+Instructions:
+Open the page, example: https://www.linkedin.com/company/atbfinancial/people/?facetNetwork=F%2CS
+Shows list of people with 2nd level connections
+Scroll down to the end of the page doing 'Show More Results' if needed
+Open console in Developer Tools (F12) and paste the script and run(Press Enter)
+*/
+(async () => {
+
+const DAILY_LIMIT = 100;   // change if you want fewer
+const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+const randomDelay = (min,max) => Math.floor(Math.random()*(max-min)+min);
+
+let connected = 0;
+let attempted = 0;
+
+function getConnectButtons() {
+    return [...document.querySelectorAll("button")]
+        .filter(btn => btn.innerText.trim().includes("Connect"));
+}
+
+async function clickSendWithoutNote() {
+
+    for (let i=0;i<15;i++) {
+
+        const sendBtn = [...document.querySelectorAll("button")]
+            .find(btn => btn.innerText.trim().includes("Send without a note"));
+
+        if (sendBtn) {
+            sendBtn.click();
+            return true;
+        }
+
+        await sleep(200);
+    }
+
+    return false;
+}
+
+async function processButton(btn,total) {
+
+    attempted++;
+
+    btn.scrollIntoView({behavior:"smooth", block:"center"});
+    await sleep(randomDelay(250,500)); //Scroll Delay - Time between finding a profile and clicking connect button
+
+    btn.click();
+
+    await sleep(randomDelay(350,600)); //After Connect - Time between pressing connect and pressing send without note
+
+    const sent = await clickSendWithoutNote();
+
+    if(sent){
+        connected++;
+        console.log(`✅ Connected: ${connected} | Attempted: ${attempted} | Total On Page: ${total}`);
+    }
+
+    await sleep(randomDelay(600,1000)); //After Invite - Time between pressing the invite and searching for the next profile to repeat the process
+}
+
+const buttons = getConnectButtons();
+
+console.log(`Found ${buttons.length} connect buttons`);
+
+for(const btn of buttons){
+
+    if(connected >= DAILY_LIMIT){
+        console.log("🛑 Daily limit reached");
+        break;
+    }
+
+    await processButton(btn, buttons.length);
+}
+
+console.log(`🎉 Finished. Sent ${connected} connection requests.`);
+
+})();
