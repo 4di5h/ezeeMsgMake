@@ -1,46 +1,50 @@
-/*
-Downloads a csv of the list of First and Last names of profiles on screen
-Later use =concat formula to prepare the email address format
-*/
 function extractAndDownloadCSV() {
-
-  const nameElements = document.querySelectorAll('.lt-line-clamp--single-line');
+  // Use XPath to get text nodes from name elements
+  const xpathResult = document.evaluate(
+    '//*[contains(@class, "lt-line-clamp--single-line") and contains(@class, "t-black")]/text()',
+    document,
+    null,
+    XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+    null
+  );
 
   const rows = [];
+  const seen = new Set();
 
-  nameElements.forEach(el => {
+  for (let i = 0; i < xpathResult.snapshotLength; i++) {
+    let fullName = xpathResult.snapshotItem(i).textContent.trim();
+    if (!fullName || fullName.length < 2) continue;
 
-    let fullName = el.innerText.trim();
+    // Remove certifications/suffixes after comma
+    fullName = fullName.split(",")[0].trim();
 
-    // Remove certifications after comma
-    fullName = fullName.split(",")[0];
+    // Deduplicate
+    if (seen.has(fullName)) return;
+    seen.add(fullName);
 
     const parts = fullName.split(/\s+/);
-
     const firstName = parts[0] || "";
     const lastName = parts.slice(1).join(" ") || "";
 
-    rows.push(`${firstName},${lastName}`);
+    rows.push(`"${firstName}","${lastName}"`);
+  }
 
-  });
+  if (rows.length === 0) {
+    console.warn("No names found.");
+    return;
+  }
 
   const csvContent = "First Name,Last Name\n" + rows.join("\n");
-
-  // Create downloadable file
   const blob = new Blob([csvContent], { type: "text/csv" });
   const url = URL.createObjectURL(blob);
-
   const a = document.createElement("a");
   a.href = url;
   a.download = "linkedin_names.csv";
   document.body.appendChild(a);
   a.click();
-
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
 
-  console.log("CSV downloaded with", rows.length, "names");
-
+  console.log(`CSV downloaded with ${rows.length} names`);
 }
-
 extractAndDownloadCSV();
