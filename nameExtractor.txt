@@ -1,36 +1,33 @@
 function extractAndDownloadCSV() {
-  // Use XPath to get text nodes from name elements
   const xpathResult = document.evaluate(
-    '//*[contains(@class, "lt-line-clamp--single-line") and contains(@class, "t-black")]/text()',
+    '/html/body/div[6]/div[3]/div/div[2]/div/div[2]/main/div[2]/div/div/div[2]/div/div[1]/ul/li/div/section/div/div/div[2]/div[1]/a/div',
     document,
     null,
     XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
     null
   );
 
+  console.log("Nodes found:", xpathResult.snapshotLength);
+
   const rows = [];
   const seen = new Set();
 
   for (let i = 0; i < xpathResult.snapshotLength; i++) {
-    let fullName = xpathResult.snapshotItem(i).textContent.trim();
+    let fullName = xpathResult.snapshotItem(i).innerText.trim();
     if (!fullName || fullName.length < 2) continue;
 
-    // Remove certifications/suffixes after comma
     fullName = fullName.split(",")[0].trim();
-
-    // Deduplicate
-    if (seen.has(fullName)) return;
+    if (seen.has(fullName)) continue;
     seen.add(fullName);
 
     const parts = fullName.split(/\s+/);
     const firstName = parts[0] || "";
     const lastName = parts.slice(1).join(" ") || "";
-
     rows.push(`"${firstName}","${lastName}"`);
   }
 
   if (rows.length === 0) {
-    console.warn("No names found.");
+    console.warn("No names found. Check if the XPath structure changed.");
     return;
   }
 
