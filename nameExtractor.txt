@@ -37,3 +37,8 @@ function extractAndDownloadCSV() {
   console.log(`CSV downloaded with ${rows.length} names`);
 }
 extractAndDownloadCSV();
+
+
+None of the above worked, so basically let gpt do the work and pick relevant stuff for you
+
+https://chatgpt.com/share/69d78fec-46ac-83e8-b123-4897d62aeb75
